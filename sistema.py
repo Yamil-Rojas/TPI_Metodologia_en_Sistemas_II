@@ -1,6 +1,8 @@
 import json
 import os
 
+from modelos import Estado, Prioridad
+
 ARCHIVO = os.path.join(os.path.dirname(os.path.abspath(__file__)), "datos.json")
 
 
@@ -21,7 +23,7 @@ class Sistema:
         if tipo != "cert" and tipo != "equi" and tipo != "baja":
             print("Tipo invalido")
             return None
-        if prioridad != 1 and prioridad != 2 and prioridad != 3:
+        if prioridad not in [valor.value for valor in Prioridad]:
             print("Prioridad invalida")
             return None
         if descripcion.strip() == "":
@@ -52,7 +54,7 @@ class Sistema:
             "descripcion": descripcion,
             "area": area,
             "fecha": fecha,
-            "estado": "pen",
+            "estado": Estado.PENDIENTE.value,
             "responsable": None,
             "plazo_dias": plazo,
         }
@@ -72,9 +74,9 @@ class Sistema:
             plazo = 3
         else:
             plazo = 10
-        if prioridad == 1:
+        if prioridad == Prioridad.ALTA.value:
             plazo = plazo - 2
-        elif prioridad == 3:
+        elif prioridad == Prioridad.BAJA.value:
             plazo = plazo + 2
         if plazo < 1:
             plazo = 1
@@ -89,10 +91,10 @@ class Sistema:
             datos = {"estudiantes": [], "responsables": [], "solicitudes": []}
         for solicitud in datos["solicitudes"]:
             if solicitud["id"] == id_solicitud:
-                if solicitud["estado"] == "pen" and nuevo_estado == "pro":
-                    solicitud["estado"] = "pro"
-                elif solicitud["estado"] == "pro" and nuevo_estado == "fin":
-                    solicitud["estado"] = "fin"
+                if solicitud["estado"] == Estado.PENDIENTE.value and nuevo_estado == Estado.EN_PROCESO.value:
+                    solicitud["estado"] = Estado.EN_PROCESO.value
+                elif solicitud["estado"] == Estado.EN_PROCESO.value and nuevo_estado == Estado.FINALIZADA.value:
+                    solicitud["estado"] = Estado.FINALIZADA.value
                 else:
                     print("Cambio de estado no permitido")
                     return
@@ -193,11 +195,11 @@ class Sistema:
         en_proceso = 0
         finalizadas = 0
         for solicitud in datos["solicitudes"]:
-            if solicitud["estado"] == "pen":
+            if solicitud["estado"] == Estado.PENDIENTE.value:
                 pendientes = pendientes + 1
-            elif solicitud["estado"] == "pro":
+            elif solicitud["estado"] == Estado.EN_PROCESO.value:
                 en_proceso = en_proceso + 1
-            elif solicitud["estado"] == "fin":
+            elif solicitud["estado"] == Estado.FINALIZADA.value:
                 finalizadas = finalizadas + 1
         print("--- REPORTE ---")
         print("Pendientes:", pendientes)
