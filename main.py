@@ -4,7 +4,7 @@ from sistema import Sistema
 
 
 def main():
-    s = Sistema()
+    sistema = Sistema()
     while True:
         print()
         print("=== Gestion de Solicitudes Academicas ===")
@@ -15,9 +15,9 @@ def main():
         print("5. Reporte basico")
         print("6. Ver responsables")
         print("0. Salir")
-        op = input("Opcion: ")
+        opcion = input("Opcion: ")
 
-        if op == "1":
+        if opcion == "1":
             nombre = input("Nombre: ")
             legajo = input("Legajo (5 digitos): ")
             email = input("Email: ")
@@ -28,38 +28,38 @@ def main():
                 prioridad = 0
             descripcion = input("Descripcion: ")
             area = input("Area: ")
-            s.registrar_solicitud(nombre, legajo, email, tipo, prioridad, descripcion, area, date.today().isoformat())
-        elif op == "2":
+            sistema.registrar_solicitud(nombre, legajo, email, tipo, prioridad, descripcion, area, date.today().isoformat())
+        elif opcion == "2":
             try:
-                i = int(input("ID de la solicitud: "))
+                id_solicitud = int(input("ID de la solicitud: "))
             except:
-                i = 0
-            e = input("Nuevo estado (pro/fin): ")
-            s.proc(i, e)
-        elif op == "3":
+                id_solicitud = 0
+            nuevo_estado = input("Nuevo estado (pro/fin): ")
+            sistema.cambiar_estado(id_solicitud, nuevo_estado)
+        elif opcion == "3":
             try:
-                i = int(input("ID de la solicitud: "))
-                r = int(input("ID del responsable: "))
+                id_solicitud = int(input("ID de la solicitud: "))
+                id_responsable = int(input("ID del responsable: "))
             except:
-                i = 0
-                r = 0
-            s.asignar_responsable(i, r)
-        elif op == "4":
+                id_solicitud = 0
+                id_responsable = 0
+            sistema.asignar_responsable(id_solicitud, id_responsable)
+        elif opcion == "4":
             print("a. Por estado  b. Por tipo  c. Por legajo")
-            c = input("Criterio: ")
-            if c == "a":
-                s.buscar_por_estado(input("Estado (pen/pro/fin): "))
-            elif c == "b":
-                s.buscar_por_tipo(input("Tipo (cert/equi/baja): "))
-            elif c == "c":
-                s.buscar_por_legajo(input("Legajo: "))
+            criterio = input("Criterio: ")
+            if criterio == "a":
+                sistema.buscar_por_estado(input("Estado (pen/pro/fin): "))
+            elif criterio == "b":
+                sistema.buscar_por_tipo(input("Tipo (cert/equi/baja): "))
+            elif criterio == "c":
+                sistema.buscar_por_legajo(input("Legajo: "))
             else:
                 print("Criterio invalido")
-        elif op == "5":
-            s.reporte()
-        elif op == "6":
-            s.listar_responsables()
-        elif op == "0":
+        elif opcion == "5":
+            sistema.reporte()
+        elif opcion == "6":
+            sistema.listar_responsables()
+        elif opcion == "0":
             print("Hasta luego")
             break
         else:

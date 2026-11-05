@@ -28,24 +28,24 @@ class Sistema:
             print("La descripcion no puede estar vacia")
             return None
         try:
-            f = open(self.archivo, "r", encoding="utf-8")
-            d = json.load(f)
-            f.close()
+            entrada = open(self.archivo, "r", encoding="utf-8")
+            datos = json.load(entrada)
+            entrada.close()
         except:
-            d = {"estudiantes": [], "responsables": [], "solicitudes": []}
+            datos = {"estudiantes": [], "responsables": [], "solicitudes": []}
         existe = False
-        for x in d["estudiantes"]:
-            if x["legajo"] == legajo:
+        for estudiante in datos["estudiantes"]:
+            if estudiante["legajo"] == legajo:
                 existe = True
         if not existe:
-            d["estudiantes"].append({"legajo": legajo, "nombre": nombre, "email": email})
-        n = 1
-        for x in d["solicitudes"]:
-            if x["id"] >= n:
-                n = x["id"] + 1
+            datos["estudiantes"].append({"legajo": legajo, "nombre": nombre, "email": email})
+        nuevo_id = 1
+        for solicitud in datos["solicitudes"]:
+            if solicitud["id"] >= nuevo_id:
+                nuevo_id = solicitud["id"] + 1
         plazo = self.calcular_plazo(tipo, prioridad)
-        nueva = {
-            "id": n,
+        nueva_solicitud = {
+            "id": nuevo_id,
             "legajo": legajo,
             "tipo": tipo,
             "prioridad": prioridad,
@@ -56,161 +56,161 @@ class Sistema:
             "responsable": None,
             "plazo_dias": plazo,
         }
-        d["solicitudes"].append(nueva)
-        f = open(self.archivo, "w", encoding="utf-8")
-        json.dump(d, f, indent=2, ensure_ascii=False)
-        f.close()
-        print("Solicitud registrada con ID", n, "- plazo:", plazo, "dias")
-        return n
+        datos["solicitudes"].append(nueva_solicitud)
+        salida = open(self.archivo, "w", encoding="utf-8")
+        json.dump(datos, salida, indent=2, ensure_ascii=False)
+        salida.close()
+        print("Solicitud registrada con ID", nuevo_id, "- plazo:", plazo, "dias")
+        return nuevo_id
 
     def calcular_plazo(self, tipo, prioridad):
         if tipo == "cert":
-            p = 5
+            plazo = 5
         elif tipo == "equi":
-            p = 15
+            plazo = 15
         elif tipo == "baja":
-            p = 3
+            plazo = 3
         else:
-            p = 10
+            plazo = 10
         if prioridad == 1:
-            p = p - 2
+            plazo = plazo - 2
         elif prioridad == 3:
-            p = p + 2
-        if p < 1:
-            p = 1
-        return p
+            plazo = plazo + 2
+        if plazo < 1:
+            plazo = 1
+        return plazo
 
-    def proc(self, i, e):
+    def cambiar_estado(self, id_solicitud, nuevo_estado):
         try:
-            f = open(self.archivo, "r", encoding="utf-8")
-            d = json.load(f)
-            f.close()
+            entrada = open(self.archivo, "r", encoding="utf-8")
+            datos = json.load(entrada)
+            entrada.close()
         except:
-            d = {"estudiantes": [], "responsables": [], "solicitudes": []}
-        for x in d["solicitudes"]:
-            if x["id"] == i:
-                if x["estado"] == "pen" and e == "pro":
-                    x["estado"] = "pro"
-                elif x["estado"] == "pro" and e == "fin":
-                    x["estado"] = "fin"
+            datos = {"estudiantes": [], "responsables": [], "solicitudes": []}
+        for solicitud in datos["solicitudes"]:
+            if solicitud["id"] == id_solicitud:
+                if solicitud["estado"] == "pen" and nuevo_estado == "pro":
+                    solicitud["estado"] = "pro"
+                elif solicitud["estado"] == "pro" and nuevo_estado == "fin":
+                    solicitud["estado"] = "fin"
                 else:
                     print("Cambio de estado no permitido")
                     return
-                f = open(self.archivo, "w", encoding="utf-8")
-                json.dump(d, f, indent=2, ensure_ascii=False)
-                f.close()
+                salida = open(self.archivo, "w", encoding="utf-8")
+                json.dump(datos, salida, indent=2, ensure_ascii=False)
+                salida.close()
                 print("Estado actualizado")
 
     def asignar_responsable(self, id_solicitud, id_responsable):
         try:
-            f = open(self.archivo, "r", encoding="utf-8")
-            d = json.load(f)
-            f.close()
+            entrada = open(self.archivo, "r", encoding="utf-8")
+            datos = json.load(entrada)
+            entrada.close()
         except:
-            d = {"estudiantes": [], "responsables": [], "solicitudes": []}
-        r = None
-        for x in d["responsables"]:
-            if x["id"] == id_responsable:
-                r = x
-        for x in d["solicitudes"]:
-            if x["id"] == id_solicitud:
-                x["responsable"] = r["nombre"]
-                x["area"] = r["area"]
-                f = open(self.archivo, "w", encoding="utf-8")
-                json.dump(d, f, indent=2, ensure_ascii=False)
-                f.close()
-                print("Responsable asignado:", r["nombre"])
+            datos = {"estudiantes": [], "responsables": [], "solicitudes": []}
+        responsable = None
+        for candidato in datos["responsables"]:
+            if candidato["id"] == id_responsable:
+                responsable = candidato
+        for solicitud in datos["solicitudes"]:
+            if solicitud["id"] == id_solicitud:
+                solicitud["responsable"] = responsable["nombre"]
+                solicitud["area"] = responsable["area"]
+                salida = open(self.archivo, "w", encoding="utf-8")
+                json.dump(datos, salida, indent=2, ensure_ascii=False)
+                salida.close()
+                print("Responsable asignado:", responsable["nombre"])
 
     def listar_responsables(self):
         try:
-            f = open(self.archivo, "r", encoding="utf-8")
-            d = json.load(f)
-            f.close()
+            entrada = open(self.archivo, "r", encoding="utf-8")
+            datos = json.load(entrada)
+            entrada.close()
         except:
-            d = {"estudiantes": [], "responsables": [], "solicitudes": []}
-        for x in d["responsables"]:
-            print(x["id"], "-", x["nombre"], "(" + x["area"] + ")")
+            datos = {"estudiantes": [], "responsables": [], "solicitudes": []}
+        for responsable in datos["responsables"]:
+            print(responsable["id"], "-", responsable["nombre"], "(" + responsable["area"] + ")")
 
-    def buscar_por_estado(self, e):
+    def buscar_por_estado(self, estado):
         try:
-            f = open(self.archivo, "r", encoding="utf-8")
-            d = json.load(f)
-            f.close()
+            entrada = open(self.archivo, "r", encoding="utf-8")
+            datos = json.load(entrada)
+            entrada.close()
         except:
-            d = {"estudiantes": [], "responsables": [], "solicitudes": []}
-        lst = []
-        for x in d["solicitudes"]:
-            if x["estado"] == e:
-                lst.append(x)
-        for x in lst:
-            print("ID", x["id"], "| legajo", x["legajo"], "| tipo", x["tipo"], "| prioridad", x["prioridad"], "| estado", x["estado"], "| responsable", x["responsable"])
-        if len(lst) == 0:
+            datos = {"estudiantes": [], "responsables": [], "solicitudes": []}
+        resultados = []
+        for solicitud in datos["solicitudes"]:
+            if solicitud["estado"] == estado:
+                resultados.append(solicitud)
+        for solicitud in resultados:
+            print("ID", solicitud["id"], "| legajo", solicitud["legajo"], "| tipo", solicitud["tipo"], "| prioridad", solicitud["prioridad"], "| estado", solicitud["estado"], "| responsable", solicitud["responsable"])
+        if len(resultados) == 0:
             print("Sin resultados")
 
-    def buscar_por_tipo(self, t):
+    def buscar_por_tipo(self, tipo):
         try:
-            f = open(self.archivo, "r", encoding="utf-8")
-            d = json.load(f)
-            f.close()
+            entrada = open(self.archivo, "r", encoding="utf-8")
+            datos = json.load(entrada)
+            entrada.close()
         except:
-            d = {"estudiantes": [], "responsables": [], "solicitudes": []}
-        lst = []
-        for x in d["solicitudes"]:
-            if x["tipo"] == t:
-                lst.append(x)
-        for x in lst:
-            print("ID", x["id"], "| legajo", x["legajo"], "| tipo", x["tipo"], "| prioridad", x["prioridad"], "| estado", x["estado"], "| responsable", x["responsable"])
-        if len(lst) == 0:
+            datos = {"estudiantes": [], "responsables": [], "solicitudes": []}
+        resultados = []
+        for solicitud in datos["solicitudes"]:
+            if solicitud["tipo"] == tipo:
+                resultados.append(solicitud)
+        for solicitud in resultados:
+            print("ID", solicitud["id"], "| legajo", solicitud["legajo"], "| tipo", solicitud["tipo"], "| prioridad", solicitud["prioridad"], "| estado", solicitud["estado"], "| responsable", solicitud["responsable"])
+        if len(resultados) == 0:
             print("Sin resultados")
 
-    def buscar_por_legajo(self, l):
-        if len(l) != 5 or not l.isdigit():
+    def buscar_por_legajo(self, legajo):
+        if len(legajo) != 5 or not legajo.isdigit():
             print("Legajo invalido")
             return
         try:
-            f = open(self.archivo, "r", encoding="utf-8")
-            d = json.load(f)
-            f.close()
+            entrada = open(self.archivo, "r", encoding="utf-8")
+            datos = json.load(entrada)
+            entrada.close()
         except:
-            d = {"estudiantes": [], "responsables": [], "solicitudes": []}
-        lst = []
-        for x in d["solicitudes"]:
-            if x["legajo"] == l:
-                lst.append(x)
-        for x in lst:
-            print("ID", x["id"], "| legajo", x["legajo"], "| tipo", x["tipo"], "| prioridad", x["prioridad"], "| estado", x["estado"], "| responsable", x["responsable"])
-        if len(lst) == 0:
+            datos = {"estudiantes": [], "responsables": [], "solicitudes": []}
+        resultados = []
+        for solicitud in datos["solicitudes"]:
+            if solicitud["legajo"] == legajo:
+                resultados.append(solicitud)
+        for solicitud in resultados:
+            print("ID", solicitud["id"], "| legajo", solicitud["legajo"], "| tipo", solicitud["tipo"], "| prioridad", solicitud["prioridad"], "| estado", solicitud["estado"], "| responsable", solicitud["responsable"])
+        if len(resultados) == 0:
             print("Sin resultados")
 
     def reporte(self):
         try:
-            f = open(self.archivo, "r", encoding="utf-8")
-            d = json.load(f)
-            f.close()
+            entrada = open(self.archivo, "r", encoding="utf-8")
+            datos = json.load(entrada)
+            entrada.close()
         except:
-            d = {"estudiantes": [], "responsables": [], "solicitudes": []}
-        a = 0
-        b = 0
-        c = 0
-        for x in d["solicitudes"]:
-            if x["estado"] == "pen":
-                a = a + 1
-            elif x["estado"] == "pro":
-                b = b + 1
-            elif x["estado"] == "fin":
-                c = c + 1
+            datos = {"estudiantes": [], "responsables": [], "solicitudes": []}
+        pendientes = 0
+        en_proceso = 0
+        finalizadas = 0
+        for solicitud in datos["solicitudes"]:
+            if solicitud["estado"] == "pen":
+                pendientes = pendientes + 1
+            elif solicitud["estado"] == "pro":
+                en_proceso = en_proceso + 1
+            elif solicitud["estado"] == "fin":
+                finalizadas = finalizadas + 1
         print("--- REPORTE ---")
-        print("Pendientes:", a)
-        print("En proceso:", b)
-        print("Finalizadas:", c)
-        print("Total:", a + b + c)
-        l = input("Legajo para ver su cantidad de solicitudes (Enter para omitir): ")
-        if l != "":
-            if len(l) != 5 or not l.isdigit():
+        print("Pendientes:", pendientes)
+        print("En proceso:", en_proceso)
+        print("Finalizadas:", finalizadas)
+        print("Total:", pendientes + en_proceso + finalizadas)
+        legajo = input("Legajo para ver su cantidad de solicitudes (Enter para omitir): ")
+        if legajo != "":
+            if len(legajo) != 5 or not legajo.isdigit():
                 print("Legajo invalido")
                 return
-            k = 0
-            for x in d["solicitudes"]:
-                if x["legajo"] == l:
-                    k = k + 1
-            print("Solicitudes del legajo", l + ":", k)
+            cantidad = 0
+            for solicitud in datos["solicitudes"]:
+                if solicitud["legajo"] == legajo:
+                    cantidad = cantidad + 1
+            print("Solicitudes del legajo", legajo + ":", cantidad)
