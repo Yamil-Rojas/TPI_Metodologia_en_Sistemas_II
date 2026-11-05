@@ -1,0 +1,29 @@
+{
+  "salida": "\n=== Gestion de Solicitudes Academicas ===\n1. Registrar solicitud\n2. Cambiar estado\n3. Asignar responsable\n4. Buscar solicitudes\n5. Reporte basico\n6. Ver responsables\n0. Salir\nOpcion: --- REPORTE ---\nPendientes: 0\nEn proceso: 0\nFinalizadas: 0\nTotal: 0\nLegajo para ver su cantidad de solicitudes (Enter para omitir): \n=== Gestion de Solicitudes Academicas ===\n1. Registrar solicitud\n2. Cambiar estado\n3. Asignar responsable\n4. Buscar solicitudes\n5. Reporte basico\n6. Ver responsables\n0. Salir\nOpcion: \n=== Gestion de Solicitudes Academicas ===\n1. Registrar solicitud\n2. Cambiar estado\n3. Asignar responsable\n4. Buscar solicitudes\n5. Reporte basico\n6. Ver responsables\n0. Salir\nOpcion: Nombre: Legajo (5 digitos): Email: Tipo (cert/equi/baja): Prioridad (1=alta, 2=media, 3=baja): Descripcion: Area: Solicitud registrada con ID 1 - plazo: 5 dias\n\n=== Gestion de Solicitudes Academicas ===\n1. Registrar solicitud\n2. Cambiar estado\n3. Asignar responsable\n4. Buscar solicitudes\n5. Reporte basico\n6. Ver responsables\n0. Salir\nOpcion: --- REPORTE ---\nPendientes: 1\nEn proceso: 0\nFinalizadas: 0\nTotal: 1\nLegajo para ver su cantidad de solicitudes (Enter para omitir): \n=== Gestion de Solicitudes Academicas ===\n1. Registrar solicitud\n2. Cambiar estado\n3. Asignar responsable\n4. Buscar solicitudes\n5. Reporte basico\n6. Ver responsables\n0. Salir\nOpcion: Hasta luego\n",
+  "codigo": 0,
+  "error": "",
+  "datos": {
+    "estudiantes": [
+      {
+        "legajo": "10040",
+        "nombre": "Nuevo",
+        "email": "n@e.com"
+      }
+    ],
+    "responsables": [],
+    "solicitudes": [
+      {
+        "id": 1,
+        "legajo": "10040",
+        "tipo": "cert",
+        "prioridad": 2,
+        "descripcion": "d",
+        "area": "Alumnado",
+        "fecha": "<HOY>",
+        "estado": "pen",
+        "responsable": null,
+        "plazo_dias": 5
+      }
+    ]
+  }
+}

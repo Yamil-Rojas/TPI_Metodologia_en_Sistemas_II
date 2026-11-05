@@ -1,0 +1,108 @@
+{
+  "salida": "\n=== Gestion de Solicitudes Academicas ===\n1. Registrar solicitud\n2. Cambiar estado\n3. Asignar responsable\n4. Buscar solicitudes\n5. Reporte basico\n6. Ver responsables\n0. Salir\nOpcion: Nombre: Legajo (5 digitos): Email: Tipo (cert/equi/baja): Prioridad (1=alta, 2=media, 3=baja): Descripcion: Area: Solicitud registrada con ID 5 - plazo: 13 dias\n\n=== Gestion de Solicitudes Academicas ===\n1. Registrar solicitud\n2. Cambiar estado\n3. Asignar responsable\n4. Buscar solicitudes\n5. Reporte basico\n6. Ver responsables\n0. Salir\nOpcion: ID de la solicitud: Nuevo estado (pro/fin): Estado actualizado\n\n=== Gestion de Solicitudes Academicas ===\n1. Registrar solicitud\n2. Cambiar estado\n3. Asignar responsable\n4. Buscar solicitudes\n5. Reporte basico\n6. Ver responsables\n0. Salir\nOpcion: ID de la solicitud: ID del responsable: Responsable asignado: Ricardo Salas\n\n=== Gestion de Solicitudes Academicas ===\n1. Registrar solicitud\n2. Cambiar estado\n3. Asignar responsable\n4. Buscar solicitudes\n5. Reporte basico\n6. Ver responsables\n0. Salir\nOpcion: ID de la solicitud: Nuevo estado (pro/fin): Estado actualizado\n\n=== Gestion de Solicitudes Academicas ===\n1. Registrar solicitud\n2. Cambiar estado\n3. Asignar responsable\n4. Buscar solicitudes\n5. Reporte basico\n6. Ver responsables\n0. Salir\nOpcion: a. Por estado  b. Por tipo  c. Por legajo\nCriterio: Legajo: ID 5 | legajo 10030 | tipo equi | prioridad 1 | estado fin | responsable Ricardo Salas\n\n=== Gestion de Solicitudes Academicas ===\n1. Registrar solicitud\n2. Cambiar estado\n3. Asignar responsable\n4. Buscar solicitudes\n5. Reporte basico\n6. Ver responsables\n0. Salir\nOpcion: --- REPORTE ---\nPendientes: 2\nEn proceso: 1\nFinalizadas: 2\nTotal: 5\nLegajo para ver su cantidad de solicitudes (Enter para omitir): Solicitudes del legajo 10030: 1\n\n=== Gestion de Solicitudes Academicas ===\n1. Registrar solicitud\n2. Cambiar estado\n3. Asignar responsable\n4. Buscar solicitudes\n5. Reporte basico\n6. Ver responsables\n0. Salir\nOpcion: a. Por estado  b. Por tipo  c. Por legajo\nCriterio: Estado (pen/pro/fin): ID 1 | legajo 10001 | tipo cert | prioridad 2 | estado fin | responsable Marta Gimenez\nID 5 | legajo 10030 | tipo equi | prioridad 1 | estado fin | responsable Ricardo Salas\n\n=== Gestion de Solicitudes Academicas ===\n1. Registrar solicitud\n2. Cambiar estado\n3. Asignar responsable\n4. Buscar solicitudes\n5. Reporte basico\n6. Ver responsables\n0. Salir\nOpcion: Hasta luego\n",
+  "codigo": 0,
+  "error": "",
+  "datos": {
+    "estudiantes": [
+      {
+        "legajo": "10001",
+        "nombre": "Lucia Fernandez",
+        "email": "lucia.fernandez@ejemplo.com"
+      },
+      {
+        "legajo": "10002",
+        "nombre": "Tomas Benitez",
+        "email": "tomas.benitez@ejemplo.com"
+      },
+      {
+        "legajo": "10003",
+        "nombre": "Camila Duarte",
+        "email": "camila.duarte@ejemplo.com"
+      },
+      {
+        "legajo": "10030",
+        "nombre": "Maria Lopez",
+        "email": "maria@ejemplo.com"
+      }
+    ],
+    "responsables": [
+      {
+        "id": 1,
+        "nombre": "Marta Gimenez",
+        "area": "Alumnado"
+      },
+      {
+        "id": 2,
+        "nombre": "Ricardo Salas",
+        "area": "Bedelia"
+      },
+      {
+        "id": 3,
+        "nombre": "Paula Ortega",
+        "area": "Sistemas"
+      }
+    ],
+    "solicitudes": [
+      {
+        "id": 1,
+        "legajo": "10001",
+        "tipo": "cert",
+        "prioridad": 2,
+        "descripcion": "Certificado de alumno regular",
+        "area": "Alumnado",
+        "fecha": "2026-10-20",
+        "estado": "fin",
+        "responsable": "Marta Gimenez",
+        "plazo_dias": 5
+      },
+      {
+        "id": 2,
+        "legajo": "10002",
+        "tipo": "equi",
+        "prioridad": 1,
+        "descripcion": "Equivalencia de Programacion I",
+        "area": "Bedelia",
+        "fecha": "2026-10-25",
+        "estado": "pro",
+        "responsable": "Ricardo Salas",
+        "plazo_dias": 13
+      },
+      {
+        "id": 3,
+        "legajo": "10003",
+        "tipo": "baja",
+        "prioridad": 3,
+        "descripcion": "Baja de materia Matematica",
+        "area": "Alumnado",
+        "fecha": "2026-10-28",
+        "estado": "pen",
+        "responsable": null,
+        "plazo_dias": 5
+      },
+      {
+        "id": 4,
+        "legajo": "10001",
+        "tipo": "cert",
+        "prioridad": 1,
+        "descripcion": "Certificado para beca",
+        "area": "Alumnado",
+        "fecha": "2026-10-30",
+        "estado": "pen",
+        "responsable": null,
+        "plazo_dias": 3
+      },
+      {
+        "id": 5,
+        "legajo": "10030",
+        "tipo": "equi",
+        "prioridad": 1,
+        "descripcion": "Equivalencia de Ingles",
+        "area": "Bedelia",
+        "fecha": "<HOY>",
+        "estado": "fin",
+        "responsable": "Ricardo Salas",
+        "plazo_dias": 13
+      }
+    ]
+  }
+}

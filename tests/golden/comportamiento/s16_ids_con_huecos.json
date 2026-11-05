@@ -1,0 +1,64 @@
+{
+  "salida": "\n=== Gestion de Solicitudes Academicas ===\n1. Registrar solicitud\n2. Cambiar estado\n3. Asignar responsable\n4. Buscar solicitudes\n5. Reporte basico\n6. Ver responsables\n0. Salir\nOpcion: Nombre: Legajo (5 digitos): Email: Tipo (cert/equi/baja): Prioridad (1=alta, 2=media, 3=baja): Descripcion: Area: Solicitud registrada con ID 8 - plazo: 5 dias\n\n=== Gestion de Solicitudes Academicas ===\n1. Registrar solicitud\n2. Cambiar estado\n3. Asignar responsable\n4. Buscar solicitudes\n5. Reporte basico\n6. Ver responsables\n0. Salir\nOpcion: a. Por estado  b. Por tipo  c. Por legajo\nCriterio: Estado (pen/pro/fin): ID 7 | legajo 10001 | tipo baja | prioridad 1 | estado pen | responsable None\nID 8 | legajo 10050 | tipo cert | prioridad 2 | estado pen | responsable None\n\n=== Gestion de Solicitudes Academicas ===\n1. Registrar solicitud\n2. Cambiar estado\n3. Asignar responsable\n4. Buscar solicitudes\n5. Reporte basico\n6. Ver responsables\n0. Salir\nOpcion: --- REPORTE ---\nPendientes: 2\nEn proceso: 0\nFinalizadas: 1\nTotal: 3\nLegajo para ver su cantidad de solicitudes (Enter para omitir): \n=== Gestion de Solicitudes Academicas ===\n1. Registrar solicitud\n2. Cambiar estado\n3. Asignar responsable\n4. Buscar solicitudes\n5. Reporte basico\n6. Ver responsables\n0. Salir\nOpcion: Hasta luego\n",
+  "codigo": 0,
+  "error": "",
+  "datos": {
+    "estudiantes": [
+      {
+        "legajo": "10001",
+        "nombre": "Lucia Fernandez",
+        "email": "lucia@ejemplo.com"
+      },
+      {
+        "legajo": "10050",
+        "nombre": "Nuevo",
+        "email": "n@e.com"
+      }
+    ],
+    "responsables": [
+      {
+        "id": 1,
+        "nombre": "Marta Gimenez",
+        "area": "Alumnado"
+      }
+    ],
+    "solicitudes": [
+      {
+        "id": 1,
+        "legajo": "10001",
+        "tipo": "cert",
+        "prioridad": 2,
+        "descripcion": "a",
+        "area": "Alumnado",
+        "fecha": "2026-10-20",
+        "estado": "fin",
+        "responsable": "Marta Gimenez",
+        "plazo_dias": 5
+      },
+      {
+        "id": 7,
+        "legajo": "10001",
+        "tipo": "baja",
+        "prioridad": 1,
+        "descripcion": "b",
+        "area": "Alumnado",
+        "fecha": "2026-10-21",
+        "estado": "pen",
+        "responsable": null,
+        "plazo_dias": 1
+      },
+      {
+        "id": 8,
+        "legajo": "10050",
+        "tipo": "cert",
+        "prioridad": 2,
+        "descripcion": "d",
+        "area": "Alumnado",
+        "fecha": "<HOY>",
+        "estado": "pen",
+        "responsable": null,
+        "plazo_dias": 5
+      }
+    ]
+  }
+}
