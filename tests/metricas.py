@@ -8,7 +8,7 @@ import os
 import re
 import sys
 
-RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+RAIZ = os.environ.get("METRICAS_RAIZ") or os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 def modulos():
@@ -53,9 +53,25 @@ def mas_larga(excluir=()):
     return max(largos) if largos else 0
 
 
+def nombres_de_una_o_dos_letras():
+    """Cuenta nombres distintos de 1 o 2 letras (variables y parámetros) por módulo."""
+    total = 0
+    for nombre in modulos():
+        arbol = ast.parse("\n".join(lineas(nombre)))
+        usados = set()
+        for nodo in ast.walk(arbol):
+            if isinstance(nodo, ast.Name) and isinstance(nodo.ctx, ast.Store):
+                usados.add(nodo.id)
+            elif isinstance(nodo, ast.arg) and nodo.arg != "self":
+                usados.add(nodo.arg)
+        total += len([n for n in usados if len(n) <= 2 and n != "_"])
+    return total
+
+
 def medir():
     return {
         "modulos": len(modulos()),
+        "nombres_de_una_o_dos_letras": nombres_de_una_o_dos_letras(),
         "open_fuera_de_repositorio": contar(r"\bopen\(", excluir=("repositorio.py",)),
         "except_vacios": contar(r"^\s*except\s*:"),
         "print_input_fuera_de_main": contar(r"\b(print|input)\(", excluir=("main.py",)),
