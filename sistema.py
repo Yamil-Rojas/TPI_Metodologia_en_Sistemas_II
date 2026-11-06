@@ -2,7 +2,7 @@ import json
 import os
 
 from modelos import Estado, Prioridad
-from validaciones import legajo_valido
+from validaciones import legajo_valido, mensaje_de_error
 
 ARCHIVO = os.path.join(os.path.dirname(os.path.abspath(__file__)), "datos.json")
 
@@ -31,36 +31,27 @@ class Sistema:
         if len(solicitudes) == 0:
             print("Sin resultados")
 
-    def registrar_solicitud(self, nombre, legajo, email, tipo, prioridad, descripcion, area, fecha):
-        if not legajo_valido(legajo):
-            print("Legajo invalido")
-            return None
-        if nombre.strip() == "":
-            print("El nombre no puede estar vacio")
-            return None
-        if "@" not in email:
-            print("Email invalido")
-            return None
-        if tipo != "cert" and tipo != "equi" and tipo != "baja":
-            print("Tipo invalido")
-            return None
-        if prioridad not in [valor.value for valor in Prioridad]:
-            print("Prioridad invalida")
-            return None
-        if descripcion.strip() == "":
-            print("La descripcion no puede estar vacia")
-            return None
-        datos = self._cargar_datos()
-        existe = False
+    def _asegurar_estudiante(self, datos, legajo, nombre, email):
         for estudiante in datos["estudiantes"]:
             if estudiante["legajo"] == legajo:
-                existe = True
-        if not existe:
-            datos["estudiantes"].append({"legajo": legajo, "nombre": nombre, "email": email})
+                return
+        datos["estudiantes"].append({"legajo": legajo, "nombre": nombre, "email": email})
+
+    def _proximo_id(self, datos):
         nuevo_id = 1
         for solicitud in datos["solicitudes"]:
             if solicitud["id"] >= nuevo_id:
                 nuevo_id = solicitud["id"] + 1
+        return nuevo_id
+
+    def registrar_solicitud(self, nombre, legajo, email, tipo, prioridad, descripcion, area, fecha):
+        error = mensaje_de_error(nombre, legajo, email, tipo, prioridad, descripcion)
+        if error is not None:
+            print(error)
+            return None
+        datos = self._cargar_datos()
+        self._asegurar_estudiante(datos, legajo, nombre, email)
+        nuevo_id = self._proximo_id(datos)
         plazo = self.calcular_plazo(tipo, prioridad)
         nueva_solicitud = {
             "id": nuevo_id,
