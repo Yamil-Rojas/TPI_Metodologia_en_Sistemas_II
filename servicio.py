@@ -58,7 +58,7 @@ class ServicioSolicitudes:
     def cambiar_estado(self, id_solicitud, nuevo_estado):
         solicitud = self.solicitudes.obtener_solicitud(id_solicitud)
         if solicitud is None:
-            raise SolicitudNoEncontrada()
+            raise SolicitudNoEncontrada(id_solicitud)
         if not solicitud.avanzar_a(nuevo_estado):
             raise CambioDeEstadoNoPermitido()
         self.solicitudes.guardar_solicitud(solicitud)
@@ -66,7 +66,7 @@ class ServicioSolicitudes:
     def asignar_responsable(self, id_solicitud, id_responsable):
         solicitud = self.solicitudes.obtener_solicitud(id_solicitud)
         if solicitud is None:
-            raise SolicitudNoEncontrada()
+            raise SolicitudNoEncontrada(id_solicitud)
         responsable = self.responsables.obtener_responsable(id_responsable)
         solicitud.asignar_a(responsable)
         self.solicitudes.guardar_solicitud(solicitud)

@@ -2,7 +2,7 @@
 import os
 from datetime import date
 
-from errores import ErrorDeSistema, SolicitudNoEncontrada
+from errores import ErrorDeSistema
 from modelos import TIPOS, DatosSolicitud
 from repositorio import RepositorioJSON
 from servicio import ServicioSolicitudes
@@ -135,8 +135,6 @@ def main():
             continue
         try:
             accion(servicio)
-        except SolicitudNoEncontrada:
-            pass  # comportamiento heredado: la solicitud inexistente no avisa (se corrige en el paso 10)
         except ErrorDeSistema as error:
             print(error)
 

@@ -10,7 +10,8 @@ class DatosInvalidos(ErrorDeSistema):
 
 
 class SolicitudNoEncontrada(ErrorDeSistema):
-    pass
+    def __init__(self, id_solicitud):
+        super().__init__(f"No existe la solicitud con ID {id_solicitud}")
 
 
 class CambioDeEstadoNoPermitido(ErrorDeSistema):
