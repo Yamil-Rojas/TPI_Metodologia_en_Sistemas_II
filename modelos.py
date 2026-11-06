@@ -103,3 +103,14 @@ class BajaMateria(TipoSolicitud):
 
 # Para agregar un tipo nuevo: crear su clase y sumarla a esta lista.
 TIPOS = {tipo.codigo: tipo for tipo in (Certificado(), Equivalencia(), BajaMateria())}
+
+
+@dataclass
+class ResumenReporte:
+    pendientes: int
+    en_proceso: int
+    finalizadas: int
+
+    @property
+    def total(self):
+        return self.pendientes + self.en_proceso + self.finalizadas

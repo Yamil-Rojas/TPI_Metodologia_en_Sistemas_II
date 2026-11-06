@@ -1,5 +1,9 @@
-from modelos import TIPOS, Estado, Estudiante, Prioridad, Solicitud
+"""Reglas de negocio. No imprime ni lee de teclado: devuelve datos o lanza errores."""
+from errores import CambioDeEstadoNoPermitido, DatosInvalidos, SolicitudNoEncontrada
+from modelos import TIPOS, Estado, Estudiante, Prioridad, ResumenReporte, Solicitud
 from validaciones import legajo_valido, mensaje_de_error
+
+MENSAJE_LEGAJO_INVALIDO = "Legajo invalido"
 
 
 class ServicioSolicitudes:
@@ -7,12 +11,6 @@ class ServicioSolicitudes:
         self.solicitudes = solicitudes
         self.estudiantes = estudiantes
         self.responsables = responsables
-
-    def _mostrar_solicitudes(self, solicitudes):
-        for solicitud in solicitudes:
-            print("ID", solicitud.id, "| legajo", solicitud.legajo, "| tipo", solicitud.tipo, "| prioridad", solicitud.prioridad, "| estado", solicitud.estado, "| responsable", solicitud.responsable)
-        if len(solicitudes) == 0:
-            print("Sin resultados")
 
     def _asegurar_estudiante(self, datos_solicitud):
         if self.estudiantes.obtener_estudiante(datos_solicitud.legajo) is None:
@@ -39,70 +37,60 @@ class ServicioSolicitudes:
             plazo_dias=plazo,
         )
 
+    def _validar_legajo(self, legajo):
+        if not legajo_valido(legajo):
+            raise DatosInvalidos(MENSAJE_LEGAJO_INVALIDO)
+
+    def _solicitudes_del_legajo(self, legajo):
+        self._validar_legajo(legajo)
+        return [solicitud for solicitud in self.solicitudes.listar_solicitudes() if solicitud.legajo == legajo]
+
     def registrar_solicitud(self, datos_solicitud):
         error = mensaje_de_error(datos_solicitud)
         if error is not None:
-            print(error)
-            return None
+            raise DatosInvalidos(error)
         self._asegurar_estudiante(datos_solicitud)
-        nuevo_id = self._proximo_id()
         plazo = TIPOS[datos_solicitud.tipo].calcular_plazo(Prioridad(datos_solicitud.prioridad))
-        self.solicitudes.guardar_solicitud(self._crear_solicitud(nuevo_id, datos_solicitud, plazo))
-        print("Solicitud registrada con ID", nuevo_id, "- plazo:", plazo, "dias")
-        return nuevo_id
+        solicitud = self._crear_solicitud(self._proximo_id(), datos_solicitud, plazo)
+        self.solicitudes.guardar_solicitud(solicitud)
+        return solicitud
 
     def cambiar_estado(self, id_solicitud, nuevo_estado):
         solicitud = self.solicitudes.obtener_solicitud(id_solicitud)
         if solicitud is None:
-            return
+            raise SolicitudNoEncontrada()
         if not solicitud.avanzar_a(nuevo_estado):
-            print("Cambio de estado no permitido")
-            return
+            raise CambioDeEstadoNoPermitido()
         self.solicitudes.guardar_solicitud(solicitud)
-        print("Estado actualizado")
 
     def asignar_responsable(self, id_solicitud, id_responsable):
-        responsable = self.responsables.obtener_responsable(id_responsable)
         solicitud = self.solicitudes.obtener_solicitud(id_solicitud)
         if solicitud is None:
-            return
+            raise SolicitudNoEncontrada()
+        responsable = self.responsables.obtener_responsable(id_responsable)
         solicitud.asignar_a(responsable)
         self.solicitudes.guardar_solicitud(solicitud)
-        print("Responsable asignado:", responsable.nombre)
+        return responsable
 
     def listar_responsables(self):
-        for responsable in self.responsables.listar_responsables():
-            print(responsable.id, "-", responsable.nombre, "(" + responsable.area + ")")
+        return self.responsables.listar_responsables()
 
     def buscar_por_estado(self, estado):
-        resultados = [solicitud for solicitud in self.solicitudes.listar_solicitudes() if solicitud.estado == estado]
-        self._mostrar_solicitudes(resultados)
+        return [solicitud for solicitud in self.solicitudes.listar_solicitudes() if solicitud.estado == estado]
 
     def buscar_por_tipo(self, tipo):
-        resultados = [solicitud for solicitud in self.solicitudes.listar_solicitudes() if solicitud.tipo == tipo]
-        self._mostrar_solicitudes(resultados)
+        return [solicitud for solicitud in self.solicitudes.listar_solicitudes() if solicitud.tipo == tipo]
 
     def buscar_por_legajo(self, legajo):
-        if not legajo_valido(legajo):
-            print("Legajo invalido")
-            return
-        resultados = [solicitud for solicitud in self.solicitudes.listar_solicitudes() if solicitud.legajo == legajo]
-        self._mostrar_solicitudes(resultados)
+        return self._solicitudes_del_legajo(legajo)
 
-    def reporte(self):
+    def resumen(self):
         solicitudes = self.solicitudes.listar_solicitudes()
-        pendientes = len([solicitud for solicitud in solicitudes if solicitud.estado == Estado.PENDIENTE.value])
-        en_proceso = len([solicitud for solicitud in solicitudes if solicitud.estado == Estado.EN_PROCESO.value])
-        finalizadas = len([solicitud for solicitud in solicitudes if solicitud.estado == Estado.FINALIZADA.value])
-        print("--- REPORTE ---")
-        print("Pendientes:", pendientes)
-        print("En proceso:", en_proceso)
-        print("Finalizadas:", finalizadas)
-        print("Total:", pendientes + en_proceso + finalizadas)
-        legajo = input("Legajo para ver su cantidad de solicitudes (Enter para omitir): ")
-        if legajo != "":
-            if not legajo_valido(legajo):
-                print("Legajo invalido")
-                return
-            cantidad = len([solicitud for solicitud in solicitudes if solicitud.legajo == legajo])
-            print("Solicitudes del legajo", legajo + ":", cantidad)
+        return ResumenReporte(
+            pendientes=len([solicitud for solicitud in solicitudes if solicitud.estado == Estado.PENDIENTE.value]),
+            en_proceso=len([solicitud for solicitud in solicitudes if solicitud.estado == Estado.EN_PROCESO.value]),
+            finalizadas=len([solicitud for solicitud in solicitudes if solicitud.estado == Estado.FINALIZADA.value]),
+        )
+
+    def cantidad_de_solicitudes(self, legajo):
+        return len(self._solicitudes_del_legajo(legajo))
