@@ -1,4 +1,4 @@
-from modelos import Estado, Estudiante, Prioridad, Solicitud
+from modelos import TIPOS, Estado, Estudiante, Prioridad, Solicitud
 from validaciones import legajo_valido, mensaje_de_error
 
 
@@ -46,27 +46,10 @@ class ServicioSolicitudes:
             return None
         self._asegurar_estudiante(datos_solicitud)
         nuevo_id = self._proximo_id()
-        plazo = self.calcular_plazo(datos_solicitud.tipo, datos_solicitud.prioridad)
+        plazo = TIPOS[datos_solicitud.tipo].calcular_plazo(Prioridad(datos_solicitud.prioridad))
         self.solicitudes.guardar_solicitud(self._crear_solicitud(nuevo_id, datos_solicitud, plazo))
         print("Solicitud registrada con ID", nuevo_id, "- plazo:", plazo, "dias")
         return nuevo_id
-
-    def calcular_plazo(self, tipo, prioridad):
-        if tipo == "cert":
-            plazo = 5
-        elif tipo == "equi":
-            plazo = 15
-        elif tipo == "baja":
-            plazo = 3
-        else:
-            plazo = 10
-        if prioridad == Prioridad.ALTA.value:
-            plazo = plazo - 2
-        elif prioridad == Prioridad.BAJA.value:
-            plazo = plazo + 2
-        if plazo < 1:
-            plazo = 1
-        return plazo
 
     def cambiar_estado(self, id_solicitud, nuevo_estado):
         solicitud = self.solicitudes.obtener_solicitud(id_solicitud)

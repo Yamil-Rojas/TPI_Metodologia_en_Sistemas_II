@@ -1,4 +1,4 @@
-from modelos import Prioridad
+from modelos import TIPOS, Prioridad
 
 
 def legajo_valido(legajo):
@@ -13,7 +13,7 @@ def mensaje_de_error(datos_solicitud):
         return "El nombre no puede estar vacio"
     if "@" not in datos_solicitud.email:
         return "Email invalido"
-    if datos_solicitud.tipo != "cert" and datos_solicitud.tipo != "equi" and datos_solicitud.tipo != "baja":
+    if datos_solicitud.tipo not in TIPOS:
         return "Tipo invalido"
     if datos_solicitud.prioridad not in [valor.value for valor in Prioridad]:
         return "Prioridad invalida"

@@ -1,7 +1,7 @@
 import os
 from datetime import date
 
-from modelos import DatosSolicitud
+from modelos import TIPOS, DatosSolicitud
 from repositorio import RepositorioJSON
 from servicio import ServicioSolicitudes
 
@@ -27,7 +27,7 @@ def main():
             nombre = input("Nombre: ")
             legajo = input("Legajo (5 digitos): ")
             email = input("Email: ")
-            tipo = input("Tipo (cert/equi/baja): ")
+            tipo = input("Tipo (" + "/".join(TIPOS) + "): ")
             try:
                 prioridad = int(input("Prioridad (1=alta, 2=media, 3=baja): "))
             except:
@@ -66,7 +66,7 @@ def main():
             if criterio == "a":
                 sistema.buscar_por_estado(input("Estado (pen/pro/fin): "))
             elif criterio == "b":
-                sistema.buscar_por_tipo(input("Tipo (cert/equi/baja): "))
+                sistema.buscar_por_tipo(input("Tipo (" + "/".join(TIPOS) + "): "))
             elif criterio == "c":
                 sistema.buscar_por_legajo(input("Legajo: "))
             else:
