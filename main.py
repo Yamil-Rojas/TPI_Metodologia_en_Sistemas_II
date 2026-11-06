@@ -1,11 +1,16 @@
+import os
 from datetime import date
 
 from modelos import DatosSolicitud
+from repositorio import RepositorioJSON
 from sistema import Sistema
+
+RUTA_DATOS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "datos.json")
 
 
 def main():
-    sistema = Sistema()
+    repositorio = RepositorioJSON(RUTA_DATOS)
+    sistema = Sistema(repositorio, repositorio, repositorio)
     while True:
         print()
         print("=== Gestion de Solicitudes Academicas ===")
