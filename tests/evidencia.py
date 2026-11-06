@@ -54,8 +54,15 @@ def celda(texto):
     return texto.replace("|", "/").replace("\n", " ")
 
 
+def marca(coincide):
+    return "igual" if coincide else "DISTINTO"
+
+
 def comportamiento(original):
-    filas = ["| Escenario | Qué se prueba | Salida | Código de salida | datos.json guardado | Resultado |", "| --- | --- | --- | --- | --- | --- |"]
+    filas = [
+        "| Escenario | Qué se prueba | Salida | Código de salida | datos.json guardado | Resultado |",
+        "| --- | --- | --- | --- | --- | --- |",
+    ]
     iguales = 0
     for nombre, escenario in COMPORTAMIENTO.items():
         antes, despues = correr(original, escenario), correr(RAIZ, escenario)
@@ -64,8 +71,11 @@ def comportamiento(original):
         mismos_datos = antes["datos"] == despues["datos"]
         igual = misma_salida and mismo_codigo and mismos_datos
         iguales += igual
-        marca = lambda ok: "igual" if ok else "DISTINTO"
-        filas.append(f"| {nombre} | {DESCRIPCION[nombre]} | {marca(misma_salida)} | {marca(mismo_codigo)} | {marca(mismos_datos)} | {'sin cambios' if igual else 'CAMBIÓ'} |")
+        resultado = "sin cambios" if igual else "CAMBIÓ"
+        filas.append(
+            f"| {nombre} | {DESCRIPCION[nombre]} | {marca(misma_salida)} | {marca(mismo_codigo)} "
+            f"| {marca(mismos_datos)} | {resultado} |"
+        )
     return filas, iguales, len(COMPORTAMIENTO)
 
 
@@ -89,17 +99,26 @@ def despues_de_corregir(resultado, base):
     hechos = []
     mensaje = mensaje_nuevo(resultado)
     hechos.append(f"muestra `{mensaje}`" if mensaje else "no muestra mensaje")
-    hechos.append("el programa sigue funcionando" if resultado["codigo"] == 0 else f"el programa se corta con `{resultado['error']}`")
+    if resultado["codigo"] == 0:
+        hechos.append("el programa sigue funcionando")
+    else:
+        hechos.append(f"el programa se corta con `{resultado['error']}`")
     hechos.append("datos.json queda igual" if resultado["datos"] == base else "datos.json cambió")
     return "; ".join(hechos)
 
 
 def correcciones(original):
-    filas = ["| Caso | Qué se prueba | Antes (código original) | Después (código refactorizado) |", "| --- | --- | --- | --- |"]
+    filas = [
+        "| Caso | Qué se prueba | Antes (código original) | Después (código refactorizado) |",
+        "| --- | --- | --- | --- |",
+    ]
     for nombre, escenario in CORRECCIONES.items():
         antes, despues = correr(original, escenario), correr(RAIZ, escenario)
         base = correr(RAIZ, {"entradas": SALIR, "datos": escenario.get("datos")})["datos"]
-        filas.append(f"| {nombre[:3]} | {DESCRIPCION[nombre]} | {celda(antes_de_corregir(antes, base))} | {celda(despues_de_corregir(despues, base))} |")
+        filas.append(
+            f"| {nombre[:3]} | {DESCRIPCION[nombre]} | {celda(antes_de_corregir(antes, base))} "
+            f"| {celda(despues_de_corregir(despues, base))} |"
+        )
     return filas
 
 
@@ -109,7 +128,9 @@ def main(original, salida):
     texto = [
         "# Evidencia de pruebas antes/después",
         "",
-        "Generado por `tests/evidencia.py`: corre los mismos escenarios sobre el código original (tag `estado-inicial`) y sobre el código refactorizado, con los mismos datos de partida (`tests/datos_base.json`).",
+        "Generado por `tests/evidencia.py`: corre los mismos escenarios sobre el código original "
+        "(tag `estado-inicial`) y sobre el código refactorizado, con los mismos datos de partida "
+        "(`tests/datos_base.json`).",
         "",
         f"## Comportamiento que no debe cambiar: {iguales} de {total} escenarios idénticos",
         "",

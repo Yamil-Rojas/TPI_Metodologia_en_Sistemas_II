@@ -32,7 +32,14 @@ def pedir_entero_o_cero(mensaje):
 
 def mostrar_solicitudes(solicitudes):
     for solicitud in solicitudes:
-        print("ID", solicitud.id, "| legajo", solicitud.legajo, "| tipo", solicitud.tipo, "| prioridad", solicitud.prioridad, "| estado", solicitud.estado, "| responsable", solicitud.responsable)
+        print(
+            "ID", solicitud.id,
+            "| legajo", solicitud.legajo,
+            "| tipo", solicitud.tipo,
+            "| prioridad", solicitud.prioridad,
+            "| estado", solicitud.estado,
+            "| responsable", solicitud.responsable,
+        )
     if len(solicitudes) == 0:
         print("Sin resultados")
 

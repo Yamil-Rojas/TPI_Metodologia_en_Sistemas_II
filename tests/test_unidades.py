@@ -12,7 +12,6 @@ from dataclasses import asdict
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, RAIZ)
 
-import modelos  # noqa: E402
 from errores import DatosInvalidos, NoEncontrado  # noqa: E402
 from modelos import TIPOS, DatosSolicitud, Estado, Prioridad, Responsable, Solicitud, TipoSolicitud  # noqa: E402
 from repositorio import RepositorioEstudiantes, RepositorioResponsables, RepositorioSolicitudes  # noqa: E402
@@ -102,7 +101,8 @@ class TestServicioConRepositorioEnMemoria(unittest.TestCase):
         servicio, repositorio = servicio_nuevo()
         servicio.registrar_solicitud(datos(area="Otra"))
         servicio.asignar_responsable(1, 1)
-        self.assertEqual((repositorio.solicitudes[1].responsable, repositorio.solicitudes[1].area), ("Marta Gimenez", "Alumnado"))
+        guardada = repositorio.solicitudes[1]
+        self.assertEqual((guardada.responsable, guardada.area), ("Marta Gimenez", "Alumnado"))
 
     def test_busquedas_y_cantidad_por_legajo(self):
         servicio, _ = servicio_nuevo()
@@ -139,7 +139,8 @@ class TestTiposDeSolicitud(unittest.TestCase):
     def test_plazos_originales(self):
         esperado = {"cert": (3, 5, 7), "equi": (13, 15, 17), "baja": (1, 3, 5)}
         for codigo, plazos in esperado.items():
-            real = tuple(TIPOS[codigo].calcular_plazo(prioridad) for prioridad in (Prioridad.ALTA, Prioridad.MEDIA, Prioridad.BAJA))
+            prioridades = (Prioridad.ALTA, Prioridad.MEDIA, Prioridad.BAJA)
+            real = tuple(TIPOS[codigo].calcular_plazo(prioridad) for prioridad in prioridades)
             self.assertEqual(real, plazos, codigo)
 
     def test_agregar_un_tipo_nuevo_no_toca_servicio_validaciones_ni_main(self):
