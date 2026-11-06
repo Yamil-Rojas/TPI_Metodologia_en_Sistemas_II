@@ -1,5 +1,6 @@
 from datetime import date
 
+from modelos import DatosSolicitud
 from sistema import Sistema
 
 
@@ -28,7 +29,17 @@ def main():
                 prioridad = 0
             descripcion = input("Descripcion: ")
             area = input("Area: ")
-            sistema.registrar_solicitud(nombre, legajo, email, tipo, prioridad, descripcion, area, date.today().isoformat())
+            datos_solicitud = DatosSolicitud(
+                nombre=nombre,
+                legajo=legajo,
+                email=email,
+                tipo=tipo,
+                prioridad=prioridad,
+                descripcion=descripcion,
+                area=area,
+                fecha=date.today().isoformat(),
+            )
+            sistema.registrar_solicitud(datos_solicitud)
         elif opcion == "2":
             try:
                 id_solicitud = int(input("ID de la solicitud: "))

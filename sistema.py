@@ -31,11 +31,15 @@ class Sistema:
         if len(solicitudes) == 0:
             print("Sin resultados")
 
-    def _asegurar_estudiante(self, datos, legajo, nombre, email):
+    def _asegurar_estudiante(self, datos, datos_solicitud):
         for estudiante in datos["estudiantes"]:
-            if estudiante["legajo"] == legajo:
+            if estudiante["legajo"] == datos_solicitud.legajo:
                 return
-        datos["estudiantes"].append({"legajo": legajo, "nombre": nombre, "email": email})
+        datos["estudiantes"].append({
+            "legajo": datos_solicitud.legajo,
+            "nombre": datos_solicitud.nombre,
+            "email": datos_solicitud.email,
+        })
 
     def _proximo_id(self, datos):
         nuevo_id = 1
@@ -44,28 +48,30 @@ class Sistema:
                 nuevo_id = solicitud["id"] + 1
         return nuevo_id
 
-    def registrar_solicitud(self, nombre, legajo, email, tipo, prioridad, descripcion, area, fecha):
-        error = mensaje_de_error(nombre, legajo, email, tipo, prioridad, descripcion)
-        if error is not None:
-            print(error)
-            return None
-        datos = self._cargar_datos()
-        self._asegurar_estudiante(datos, legajo, nombre, email)
-        nuevo_id = self._proximo_id(datos)
-        plazo = self.calcular_plazo(tipo, prioridad)
-        nueva_solicitud = {
+    def _crear_solicitud(self, nuevo_id, datos_solicitud, plazo):
+        return {
             "id": nuevo_id,
-            "legajo": legajo,
-            "tipo": tipo,
-            "prioridad": prioridad,
-            "descripcion": descripcion,
-            "area": area,
-            "fecha": fecha,
+            "legajo": datos_solicitud.legajo,
+            "tipo": datos_solicitud.tipo,
+            "prioridad": datos_solicitud.prioridad,
+            "descripcion": datos_solicitud.descripcion,
+            "area": datos_solicitud.area,
+            "fecha": datos_solicitud.fecha,
             "estado": Estado.PENDIENTE.value,
             "responsable": None,
             "plazo_dias": plazo,
         }
-        datos["solicitudes"].append(nueva_solicitud)
+
+    def registrar_solicitud(self, datos_solicitud):
+        error = mensaje_de_error(datos_solicitud)
+        if error is not None:
+            print(error)
+            return None
+        datos = self._cargar_datos()
+        self._asegurar_estudiante(datos, datos_solicitud)
+        nuevo_id = self._proximo_id(datos)
+        plazo = self.calcular_plazo(datos_solicitud.tipo, datos_solicitud.prioridad)
+        datos["solicitudes"].append(self._crear_solicitud(nuevo_id, datos_solicitud, plazo))
         self._guardar_datos(datos)
         print("Solicitud registrada con ID", nuevo_id, "- plazo:", plazo, "dias")
         return nuevo_id
