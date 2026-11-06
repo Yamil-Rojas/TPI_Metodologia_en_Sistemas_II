@@ -32,3 +32,5 @@ Generado por `tests/evidencia.py`: corre los mismos escenarios sobre el código 
 | c03 | Asignar a una solicitud que no existe (ID 99) | no muestra ningún mensaje | muestra `No existe la solicitud con ID 99`; el programa sigue funcionando; datos.json queda igual |
 | c04 | Pedir el reporte con datos.json danado | muestra el reporte como si no hubiera datos (Total: 0) | muestra `No se pudo leer datos.json: el archivo esta danado o no es accesible. No se modifico nada.`; el programa sigue funcionando; datos.json queda igual |
 | c05 | Registrar una solicitud con datos.json danado | pisa datos.json (queda con 1 solicitud) | muestra `No se pudo leer datos.json: el archivo esta danado o no es accesible. No se modifico nada.`; el programa sigue funcionando; datos.json queda igual |
+| c06 | Cambiar estado escribiendo letras en vez de un ID | no muestra ningún mensaje | muestra `ID invalido`; el programa sigue funcionando; datos.json queda igual |
+| c07 | Asignar responsable escribiendo letras en vez de un ID | no muestra ningún mensaje | muestra `ID invalido`; el programa sigue funcionando; datos.json queda igual |

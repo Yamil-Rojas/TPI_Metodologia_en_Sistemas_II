@@ -2,7 +2,7 @@
 import os
 from datetime import date
 
-from errores import ErrorDeSistema
+from errores import DatosInvalidos, ErrorDeSistema
 from modelos import TIPOS, DatosSolicitud
 from repositorio import RepositorioJSON
 from servicio import ServicioSolicitudes
@@ -28,6 +28,13 @@ def pedir_entero_o_cero(mensaje):
         return int(input(mensaje))
     except ValueError:
         return 0
+
+
+def pedir_id(mensaje):
+    try:
+        return int(input(mensaje))
+    except ValueError:
+        raise DatosInvalidos("ID invalido") from None
 
 
 def mostrar_solicitudes(solicitudes):
@@ -70,19 +77,15 @@ def registrar(servicio):
 
 
 def cambiar_estado(servicio):
-    id_solicitud = pedir_entero_o_cero("ID de la solicitud: ")
+    id_solicitud = pedir_id("ID de la solicitud: ")
     nuevo_estado = input("Nuevo estado (pro/fin): ")
     servicio.cambiar_estado(id_solicitud, nuevo_estado)
     print("Estado actualizado")
 
 
 def asignar_responsable(servicio):
-    try:
-        id_solicitud = int(input("ID de la solicitud: "))
-        id_responsable = int(input("ID del responsable: "))
-    except ValueError:
-        id_solicitud = 0
-        id_responsable = 0
+    id_solicitud = pedir_id("ID de la solicitud: ")
+    id_responsable = pedir_id("ID del responsable: ")
     responsable = servicio.asignar_responsable(id_solicitud, id_responsable)
     print("Responsable asignado:", responsable.nombre)
 

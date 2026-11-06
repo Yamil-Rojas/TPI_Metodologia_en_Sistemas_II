@@ -163,4 +163,6 @@ CORRECCIONES = {
         "datos": "{ roto",
         "entradas": reg("Nuevo", "10040", "n@e.com", "cert", "2", "d", "Alumnado") + SALIR,
     },
+    "c06_estado_id_no_numerico": {"entradas": ["2", "abc", "pro"] + SALIR},
+    "c07_asignar_id_no_numerico": {"entradas": ["3", "abc"] + SALIR},
 }

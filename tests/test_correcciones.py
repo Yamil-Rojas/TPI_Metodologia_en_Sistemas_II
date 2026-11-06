@@ -40,6 +40,12 @@ class TestCorrecciones(unittest.TestCase):
         resultado = ejecutar(escenario["entradas"], escenario["datos"])
         self.assertNotIn("--- REPORTE ---", resultado["salida"])
 
+    def test_c06_cambiar_estado_con_letras_en_vez_de_id_avisa(self):
+        self.verificar("c06_estado_id_no_numerico", "ID invalido", datos_sin_tocar())
+
+    def test_c07_asignar_con_letras_en_vez_de_id_avisa(self):
+        self.verificar("c07_asignar_id_no_numerico", "ID invalido", datos_sin_tocar())
+
     def test_c05_json_danado_en_registro_no_pisa_el_archivo(self):
         self.verificar("c05_json_danado_registro", "No se pudo leer datos.json", {"texto": "{ roto"})
 

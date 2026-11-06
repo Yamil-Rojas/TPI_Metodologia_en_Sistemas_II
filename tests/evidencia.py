@@ -34,6 +34,8 @@ DESCRIPCION = {
     "c03_asignar_solicitud_inexistente": "Asignar a una solicitud que no existe (ID 99)",
     "c04_json_danado_reporte": "Pedir el reporte con datos.json danado",
     "c05_json_danado_registro": "Registrar una solicitud con datos.json danado",
+    "c06_estado_id_no_numerico": "Cambiar estado escribiendo letras en vez de un ID",
+    "c07_asignar_id_no_numerico": "Asignar responsable escribiendo letras en vez de un ID",
 }
 
 
@@ -41,7 +43,7 @@ def correr(carpeta, escenario):
     return ejecutar(escenario["entradas"], escenario.get("datos"), raiz=carpeta)
 
 
-MENSAJE_NUEVO = re.compile(r"(No existe [^\n]+? con ID \d+|No se pudo leer [^\n]*)")
+MENSAJE_NUEVO = re.compile(r"(No existe [^\n]+? con ID \d+|No se pudo leer [^\n]*|ID invalido)")
 
 
 def mensaje_nuevo(resultado):
