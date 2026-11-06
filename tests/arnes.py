@@ -14,14 +14,18 @@ import tempfile
 from datetime import date
 
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# Datos de partida de todas las pruebas: una copia propia, para que usar el
+# programa a mano (que modifica datos.json) no rompa las pruebas.
+DATOS_BASE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "datos_base.json")
 HOY = date.today().isoformat()
 SIN_ARCHIVO = object()
 
 
-def _copiar_codigo(destino):
-    for nombre in os.listdir(RAIZ):
-        if nombre.endswith(".py") or nombre == "datos.json":
-            shutil.copy(os.path.join(RAIZ, nombre), destino)
+def _copiar_codigo(raiz, destino):
+    for nombre in os.listdir(raiz):
+        if nombre.endswith(".py"):
+            shutil.copy(os.path.join(raiz, nombre), destino)
+    shutil.copy(DATOS_BASE, os.path.join(destino, "datos.json"))
 
 
 def _leer_datos(ruta):
@@ -44,14 +48,14 @@ def _ultima_linea(texto):
     return lineas[-1] if lineas else ""
 
 
-def ejecutar(entradas, datos=None):
-    """Corre main.py con las entradas dadas.
+def ejecutar(entradas, datos=None, raiz=RAIZ):
+    """Corre main.py (el de la carpeta raiz) con las entradas dadas.
 
-    datos: None usa el datos.json del repositorio, un texto lo reemplaza y
+    datos: None usa tests/datos_base.json, un texto lo reemplaza y
     SIN_ARCHIVO lo borra antes de empezar.
     """
     with tempfile.TemporaryDirectory() as carpeta:
-        _copiar_codigo(carpeta)
+        _copiar_codigo(raiz, carpeta)
         ruta_datos = os.path.join(carpeta, "datos.json")
         if datos is SIN_ARCHIVO:
             os.remove(ruta_datos)
