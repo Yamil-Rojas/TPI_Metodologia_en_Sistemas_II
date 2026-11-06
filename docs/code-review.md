@@ -62,6 +62,3 @@ El código se acepta si cumple todo esto:
 5. **Área vacía:** el campo "Área" se acepta vacío, igual que en el original.
 6. **Tamaño de `modelos.py`:** reúne enums, entidades y tipos en 116 líneas. Si crece, conviene separarlo.
 
-## Feedback de integrantes
-
-_Pendiente: Franco y Santiago leen el código y registran acá sus comentarios, qué se corrigió y qué se aceptó._

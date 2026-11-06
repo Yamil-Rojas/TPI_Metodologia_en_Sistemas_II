@@ -1,44 +1,18 @@
-# Sistema de Gestión de Solicitudes Académicas
+# Gestión de Solicitudes Académicas
 
-Trabajo Práctico Integrador de **Metodología de Sistemas II** (Tecnicatura Universitaria en Programación, UTN).
+Sistema de consola en Python para registrar y seguir solicitudes académicas de estudiantes (certificados, equivalencias y bajas de materia). Los datos se guardan en un archivo JSON.
 
-El proyecto parte de un sistema pequeño que **funciona correctamente pero tiene mala calidad interna**. El objetivo del TPI es diagnosticarlo, refactorizarlo y demostrar con evidencia que el comportamiento externo se mantiene igual.
+Este repositorio es el Trabajo Práctico Integrador de **Metodología de Sistemas II** (UTN, Tecnicatura Universitaria en Programación, modalidad a distancia). El objetivo no es agregar funciones: es **refactorizar** un sistema existente y reducir su **deuda técnica** sin cambiar lo que hace.
 
-> **Aviso:** la versión `estado-inicial` contiene deuda técnica y code smells **intencionales**. No es un ejemplo de buenas prácticas: es el punto de partida del trabajo.
+Todos los datos del repositorio son **sintéticos** (inventados).
 
 ## Descripción
 
-Aplicación de consola para administrar las solicitudes que los estudiantes hacen a la institución (certificados, equivalencias, bajas de materia). Permite registrar una solicitud, hacerla avanzar de estado, asignarle un responsable, buscarla y obtener un reporte.
+El sistema original tenía todo mezclado: menú, reglas de negocio y acceso al archivo en pocas funciones largas. El repositorio muestra el proceso completo: diagnóstico, refactorings seguros con pruebas antes y después, code review y conclusiones.
 
-Todos los datos del repositorio son **sintéticos**: nombres, legajos y correos son inventados.
+## Instalación
 
-## Funcionalidades
-
-| # | Operación | Qué hace |
-|---|---|---|
-| 1 | Registrar solicitud | Valida los datos, calcula el plazo según tipo y prioridad y guarda la solicitud en estado pendiente |
-| 2 | Cambiar estado | Avanza una solicitud de pendiente a en proceso y de en proceso a finalizada. No permite retroceder ni saltar estados |
-| 3 | Asignar responsable | Asigna un responsable (y su área) a una solicitud |
-| 4 | Buscar solicitudes | Filtra por estado, por tipo o por legajo |
-| 5 | Reporte básico | Muestra la cantidad de solicitudes por estado y, opcionalmente, las de un legajo |
-| 6 | Ver responsables | Lista los responsables disponibles |
-
-### Valores válidos
-
-- **Tipo:** `cert` (certificado), `equi` (equivalencia), `baja` (baja de materia)
-- **Estado:** `pen` (pendiente), `pro` (en proceso), `fin` (finalizada)
-- **Prioridad:** `1` (alta), `2` (media), `3` (baja)
-- **Legajo:** 5 dígitos
-
-## Tecnologías
-
-- Python 3 (sin librerías externas)
-- Persistencia en un archivo JSON (`datos.json`)
-- Interfaz por consola
-
-## Instalación y uso
-
-Requisito: tener Python 3 instalado.
+Requisitos: **Python 3.10 o superior**. No hay dependencias externas.
 
 ```bash
 git clone <URL-del-repositorio>
@@ -46,44 +20,72 @@ cd <carpeta-del-repositorio>
 python main.py
 ```
 
-En algunos sistemas el comando es `python3 main.py`.
+## Funcionalidades
 
-Al ejecutarlo aparece un menú numerado. Se elige la opción escribiendo su número y respondiendo lo que se pida. La opción `0` cierra el programa.
+Al ejecutar `python main.py` aparece este menú:
 
-## Estructura del repositorio
+| Opción | Qué hace |
+| --- | --- |
+| 1 | Registrar solicitud (estudiante, tipo, prioridad) |
+| 2 | Cambiar estado (pendiente, en proceso, finalizada) |
+| 3 | Asignar responsable |
+| 4 | Buscar solicitudes |
+| 5 | Reporte básico |
+| 6 | Ver responsables |
+| 0 | Salir |
 
+Tipos de solicitud: certificado (5 días de plazo base), equivalencia (15) y baja de materia (3).
+
+## Tecnologías
+
+- Python 3 (biblioteca estándar: `json`, `dataclasses`, `abc`, `enum`)
+- `unittest` para las pruebas
+- Git y GitHub para el historial y los tags de cada etapa
+
+## Estructura del proyecto
+
+```text
+main.py            Consola: menú, print e input (única capa que los usa)
+servicio.py        Reglas de negocio (no conoce la consola ni el archivo)
+repositorio.py     Acceso a datos.json (interfaces + implementación JSON)
+modelos.py         Entidades, enumeraciones y tipos de solicitud
+errores.py         Excepciones propias
+validaciones.py    Validación de legajo y mensajes de error
+datos.json         Datos de ejemplo (sintéticos)
+tests/             Pruebas automáticas y herramientas de evidencia
+docs/              Documentación de las etapas
 ```
-.
-├── main.py        # Menú por consola
-├── sistema.py     # Lógica del sistema
-├── datos.json     # Datos de ejemplo (sintéticos)
-├── README.md
-└── docs/          # Checklist de code review, evidencias y decisiones técnicas
-```
 
-## Versiones (tags)
+Las capas dependen en una sola dirección: `main` → `servicio` → `repositorio`. El servicio recibe el repositorio por parámetro (inversión de dependencias).
 
-| Tag | Qué representa | Estado |
-|---|---|---|
-| `estado-inicial` | Sistema base con problemas de diseño | Disponible |
-| `etapa-diagnostico` | Diagnóstico de deuda técnica y code smells | Pendiente |
-| `etapa-refactoring` | Refactorings aplicados | Pendiente |
-| `etapa-pruebas` | Pruebas y verificación antes/después | Pendiente |
-| `etapa-docs` | Documentación y code review | Pendiente |
-| `estado-refactorizado` | Versión final refactorizada | Pendiente |
-
-Para ver una versión puntual:
+## Pruebas
 
 ```bash
-git checkout estado-inicial
+python -m unittest discover -s tests
 ```
 
-Para volver a la última versión: `git checkout main`.
+Son 31 pruebas. Incluyen pruebas de caja negra que ejecutan el programa con entradas simuladas y comparan la salida con un resultado de referencia, y pruebas de unidad del servicio y del repositorio. Usan su propio `tests/datos_base.json`, así que no dependen del `datos.json` de uso manual.
 
-## Integrantes
+## Etapas y tags
 
-- Reynoso Franco
-- Rodriguez Santiago
-- Rojas Maximiliano
+| Tag | Qué contiene |
+| --- | --- |
+| `estado-inicial` | Sistema base, antes de refactorizar |
+| `etapa-diagnostico` | Calidad, deuda técnica y smells |
+| `etapa-refactoring` | Refactorings aplicados |
+| `estado-refactorizado` | Código final refactorizado |
+| `etapa-pruebas` | Pruebas antes/después y evidencia |
+| `etapa-docs` | Documentación final |
 
-**Materia:** Metodología de Sistemas II · **Comisión:** 13
+Para ver el cambio completo: `git diff estado-inicial estado-refactorizado`.
+
+## Documentación (`/docs`)
+
+- [`docs/code-review.md`](docs/code-review.md): checklist de code review, hallazgos y mejoras futuras.
+- [`docs/evidencia-pruebas.md`](docs/evidencia-pruebas.md): comparación de comportamiento antes y después.
+- [`docs/decisiones-tecnicas.md`](docs/decisiones-tecnicas.md): decisiones de diseño y por qué se tomaron.
+- [`docs/uso-de-ia.md`](docs/uso-de-ia.md): declaración del uso de IA.
+
+## Equipo
+
+Maximiliano Rojas, Franco y Santiago. *(Completar apellidos y la contribución de cada integrante.)*
