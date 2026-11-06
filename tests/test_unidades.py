@@ -13,7 +13,7 @@ RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, RAIZ)
 
 import modelos  # noqa: E402
-from errores import CambioDeEstadoNoPermitido, DatosInvalidos, ResponsableNoEncontrado, SolicitudNoEncontrada  # noqa: E402
+from errores import DatosInvalidos, NoEncontrado  # noqa: E402
 from modelos import TIPOS, DatosSolicitud, Estado, Prioridad, Responsable, Solicitud, TipoSolicitud  # noqa: E402
 from repositorio import RepositorioEstudiantes, RepositorioResponsables, RepositorioSolicitudes  # noqa: E402
 from servicio import ServicioSolicitudes  # noqa: E402
@@ -84,7 +84,7 @@ class TestServicioConRepositorioEnMemoria(unittest.TestCase):
     def test_flujo_de_estados_y_cambio_no_permitido(self):
         servicio, _ = servicio_nuevo()
         servicio.registrar_solicitud(datos())
-        with self.assertRaises(CambioDeEstadoNoPermitido):
+        with self.assertRaises(DatosInvalidos):
             servicio.cambiar_estado(1, "fin")
         servicio.cambiar_estado(1, "pro")
         servicio.cambiar_estado(1, "fin")
@@ -93,9 +93,9 @@ class TestServicioConRepositorioEnMemoria(unittest.TestCase):
     def test_errores_de_ids_inexistentes(self):
         servicio, _ = servicio_nuevo()
         servicio.registrar_solicitud(datos())
-        with self.assertRaises(SolicitudNoEncontrada):
+        with self.assertRaises(NoEncontrado):
             servicio.cambiar_estado(99, "pro")
-        with self.assertRaises(ResponsableNoEncontrado):
+        with self.assertRaises(NoEncontrado):
             servicio.asignar_responsable(1, 99)
 
     def test_asignar_responsable_actualiza_nombre_y_area(self):

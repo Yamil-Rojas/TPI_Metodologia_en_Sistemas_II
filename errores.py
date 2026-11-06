@@ -6,22 +6,14 @@ class ErrorDeSistema(Exception):
 
 
 class DatosInvalidos(ErrorDeSistema):
-    """Un dato ingresado no cumple las reglas. El mensaje dice cual."""
+    """Un dato o una accion no cumple las reglas. El mensaje dice cual."""
 
 
-class SolicitudNoEncontrada(ErrorDeSistema):
-    def __init__(self, id_solicitud):
-        super().__init__(f"No existe la solicitud con ID {id_solicitud}")
+class NoEncontrado(ErrorDeSistema):
+    """No existe lo que se busco por ID. Ejemplo: NoEncontrado("la solicitud", 99)."""
 
-
-class CambioDeEstadoNoPermitido(ErrorDeSistema):
-    def __init__(self):
-        super().__init__("Cambio de estado no permitido")
-
-
-class ResponsableNoEncontrado(ErrorDeSistema):
-    def __init__(self, id_responsable):
-        super().__init__(f"No existe el responsable con ID {id_responsable}")
+    def __init__(self, descripcion, identificador):
+        super().__init__(f"No existe {descripcion} con ID {identificador}")
 
 
 class ErrorDePersistencia(ErrorDeSistema):
