@@ -1,9 +1,13 @@
 """Acceso a los datos: interfaces chicas (ISP) y su implementacion en JSON.
 
-Es el unico modulo que conoce el archivo datos.json.
+Es el unico modulo que conoce el archivo datos.json. Trabaja con las
+entidades de modelos.py: el resto del sistema nunca ve diccionarios.
 """
 import json
 from abc import ABC, abstractmethod
+from dataclasses import asdict
+
+from modelos import Estudiante, Responsable, Solicitud
 
 
 class RepositorioSolicitudes(ABC):
@@ -48,46 +52,43 @@ class RepositorioJSON(RepositorioSolicitudes, RepositorioEstudiantes, Repositori
         with open(self.ruta, "w", encoding="utf-8") as salida:
             json.dump(datos, salida, indent=2, ensure_ascii=False)
 
+    def _guardar(self, seccion, clave, entidad):
+        datos = self._leer()
+        registro = asdict(entidad)
+        for posicion, existente in enumerate(datos[seccion]):
+            if existente[clave] == registro[clave]:
+                datos[seccion][posicion] = registro
+                break
+        else:
+            datos[seccion].append(registro)
+        self._escribir(datos)
+
     def listar_solicitudes(self):
-        return self._leer()["solicitudes"]
+        return [Solicitud(**registro) for registro in self._leer()["solicitudes"]]
 
     def obtener_solicitud(self, id_solicitud):
-        for solicitud in self._leer()["solicitudes"]:
-            if solicitud["id"] == id_solicitud:
+        for solicitud in self.listar_solicitudes():
+            if solicitud.id == id_solicitud:
                 return solicitud
         return None
 
     def guardar_solicitud(self, solicitud):
-        datos = self._leer()
-        for posicion, existente in enumerate(datos["solicitudes"]):
-            if existente["id"] == solicitud["id"]:
-                datos["solicitudes"][posicion] = solicitud
-                break
-        else:
-            datos["solicitudes"].append(solicitud)
-        self._escribir(datos)
+        self._guardar("solicitudes", "id", solicitud)
 
     def obtener_estudiante(self, legajo):
-        for estudiante in self._leer()["estudiantes"]:
-            if estudiante["legajo"] == legajo:
-                return estudiante
+        for registro in self._leer()["estudiantes"]:
+            if registro["legajo"] == legajo:
+                return Estudiante(**registro)
         return None
 
     def guardar_estudiante(self, estudiante):
-        datos = self._leer()
-        for posicion, existente in enumerate(datos["estudiantes"]):
-            if existente["legajo"] == estudiante["legajo"]:
-                datos["estudiantes"][posicion] = estudiante
-                break
-        else:
-            datos["estudiantes"].append(estudiante)
-        self._escribir(datos)
+        self._guardar("estudiantes", "legajo", estudiante)
 
     def listar_responsables(self):
-        return self._leer()["responsables"]
+        return [Responsable(**registro) for registro in self._leer()["responsables"]]
 
     def obtener_responsable(self, id_responsable):
-        for responsable in self._leer()["responsables"]:
-            if responsable["id"] == id_responsable:
+        for responsable in self.listar_responsables():
+            if responsable.id == id_responsable:
                 return responsable
         return None
