@@ -17,3 +17,8 @@ class SolicitudNoEncontrada(ErrorDeSistema):
 class CambioDeEstadoNoPermitido(ErrorDeSistema):
     def __init__(self):
         super().__init__("Cambio de estado no permitido")
+
+
+class ResponsableNoEncontrado(ErrorDeSistema):
+    def __init__(self, id_responsable):
+        super().__init__(f"No existe el responsable con ID {id_responsable}")

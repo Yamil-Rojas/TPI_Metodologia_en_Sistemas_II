@@ -1,5 +1,5 @@
 """Reglas de negocio. No imprime ni lee de teclado: devuelve datos o lanza errores."""
-from errores import CambioDeEstadoNoPermitido, DatosInvalidos, SolicitudNoEncontrada
+from errores import CambioDeEstadoNoPermitido, DatosInvalidos, ResponsableNoEncontrado, SolicitudNoEncontrada
 from modelos import TIPOS, Estado, Estudiante, Prioridad, ResumenReporte, Solicitud
 from validaciones import legajo_valido, mensaje_de_error
 
@@ -68,6 +68,8 @@ class ServicioSolicitudes:
         if solicitud is None:
             raise SolicitudNoEncontrada(id_solicitud)
         responsable = self.responsables.obtener_responsable(id_responsable)
+        if responsable is None:
+            raise ResponsableNoEncontrado(id_responsable)
         solicitud.asignar_a(responsable)
         self.solicitudes.guardar_solicitud(solicitud)
         return responsable

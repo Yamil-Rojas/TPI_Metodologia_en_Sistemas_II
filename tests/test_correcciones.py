@@ -28,6 +28,12 @@ class TestCorrecciones(unittest.TestCase):
     def test_c03_asignar_a_solicitud_inexistente_avisa(self):
         self.verificar("c03_asignar_solicitud_inexistente", "No existe la solicitud con ID 99", datos_sin_tocar())
 
+    def test_c02_asignar_responsable_inexistente_avisa_y_no_corta_el_programa(self):
+        self.verificar("c02_asignar_responsable_inexistente", "No existe el responsable con ID 99", datos_sin_tocar())
+        # el programa siguio funcionando: el reporte que viene despues se mostro
+        resultado = ejecutar(CORRECCIONES["c02_asignar_responsable_inexistente"]["entradas"])
+        self.assertIn("--- REPORTE ---", resultado["salida"])
+
 
 if __name__ == "__main__":
     unittest.main()
