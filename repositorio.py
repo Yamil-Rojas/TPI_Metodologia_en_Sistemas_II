@@ -51,9 +51,9 @@ class RepositorioJSON(RepositorioSolicitudes, RepositorioEstudiantes, Repositori
         except FileNotFoundError:
             return {"estudiantes": [], "responsables": [], "solicitudes": []}
         except (OSError, ValueError) as causa:
-            raise ErrorDePersistencia(self._mensaje("No se pudo leer")) from causa
+            raise self._error_de_lectura() from causa
         if not self._tiene_estructura(datos):
-            raise ErrorDePersistencia(self._mensaje("No se pudo leer"))
+            raise self._error_de_lectura()
         return datos
 
     def _escribir(self, datos):
@@ -61,10 +61,20 @@ class RepositorioJSON(RepositorioSolicitudes, RepositorioEstudiantes, Repositori
             with open(self.ruta, "w", encoding="utf-8") as salida:
                 json.dump(datos, salida, indent=2, ensure_ascii=False)
         except OSError as causa:
-            raise ErrorDePersistencia(self._mensaje("No se pudo guardar")) from causa
+            raise self._error_de_escritura() from causa
 
-    def _mensaje(self, accion):
-        return f"{accion} {os.path.basename(self.ruta)}: el archivo esta danado o no es accesible. No se modifico nada."
+    def _error_de_lectura(self):
+        nombre = os.path.basename(self.ruta)
+        return ErrorDePersistencia(
+            f"No se pudo leer {nombre}: el archivo esta danado o no es accesible. No se modifico nada."
+        )
+
+    def _error_de_escritura(self):
+        # Una escritura fallida puede haber dejado el archivo a medias: no se afirma que no se modifico.
+        nombre = os.path.basename(self.ruta)
+        return ErrorDePersistencia(
+            f"No se pudo guardar {nombre}: no se puede escribir en el archivo. Revise el archivo."
+        )
 
     def _tiene_estructura(self, datos):
         return isinstance(datos, dict) and all(
