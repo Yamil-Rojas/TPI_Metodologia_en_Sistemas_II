@@ -22,3 +22,7 @@ class CambioDeEstadoNoPermitido(ErrorDeSistema):
 class ResponsableNoEncontrado(ErrorDeSistema):
     def __init__(self, id_responsable):
         super().__init__(f"No existe el responsable con ID {id_responsable}")
+
+
+class ErrorDePersistencia(ErrorDeSistema):
+    """No se pudo leer o escribir el archivo de datos."""

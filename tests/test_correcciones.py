@@ -34,6 +34,14 @@ class TestCorrecciones(unittest.TestCase):
         resultado = ejecutar(CORRECCIONES["c02_asignar_responsable_inexistente"]["entradas"])
         self.assertIn("--- REPORTE ---", resultado["salida"])
 
+    def test_c04_json_danado_en_reporte_avisa_en_vez_de_mostrar_ceros(self):
+        self.verificar("c04_json_danado_reporte", "No se pudo leer datos.json", {"texto": "{ roto"})
+        resultado = ejecutar(CORRECCIONES["c04_json_danado_reporte"]["entradas"], CORRECCIONES["c04_json_danado_reporte"]["datos"])
+        self.assertNotIn("--- REPORTE ---", resultado["salida"])
+
+    def test_c05_json_danado_en_registro_no_pisa_el_archivo(self):
+        self.verificar("c05_json_danado_registro", "No se pudo leer datos.json", {"texto": "{ roto"})
+
 
 if __name__ == "__main__":
     unittest.main()

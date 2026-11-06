@@ -4,9 +4,11 @@ Es el unico modulo que conoce el archivo datos.json. Trabaja con las
 entidades de modelos.py: el resto del sistema nunca ve diccionarios.
 """
 import json
+import os
 from abc import ABC, abstractmethod
 from dataclasses import asdict
 
+from errores import ErrorDePersistencia
 from modelos import Estudiante, Responsable, Solicitud
 
 
@@ -42,15 +44,32 @@ class RepositorioJSON(RepositorioSolicitudes, RepositorioEstudiantes, Repositori
         self.ruta = ruta
 
     def _leer(self):
+        """Archivo inexistente = sin datos todavia. Archivo danado = error (nunca se pisa)."""
         try:
             with open(self.ruta, "r", encoding="utf-8") as entrada:
-                return json.load(entrada)
-        except:
+                datos = json.load(entrada)
+        except FileNotFoundError:
             return {"estudiantes": [], "responsables": [], "solicitudes": []}
+        except (OSError, ValueError) as causa:
+            raise ErrorDePersistencia(self._mensaje("No se pudo leer")) from causa
+        if not self._tiene_estructura(datos):
+            raise ErrorDePersistencia(self._mensaje("No se pudo leer"))
+        return datos
 
     def _escribir(self, datos):
-        with open(self.ruta, "w", encoding="utf-8") as salida:
-            json.dump(datos, salida, indent=2, ensure_ascii=False)
+        try:
+            with open(self.ruta, "w", encoding="utf-8") as salida:
+                json.dump(datos, salida, indent=2, ensure_ascii=False)
+        except OSError as causa:
+            raise ErrorDePersistencia(self._mensaje("No se pudo guardar")) from causa
+
+    def _mensaje(self, accion):
+        return f"{accion} {os.path.basename(self.ruta)}: el archivo esta danado o no es accesible. No se modifico nada."
+
+    def _tiene_estructura(self, datos):
+        return isinstance(datos, dict) and all(
+            isinstance(datos.get(seccion), list) for seccion in ("estudiantes", "responsables", "solicitudes")
+        )
 
     def _guardar(self, seccion, clave, entidad):
         datos = self._leer()
