@@ -84,7 +84,6 @@ Para ver el cambio completo: `git diff estado-inicial estado-refactorizado`.
 - [`docs/code-review.md`](docs/code-review.md): checklist de code review, hallazgos y mejoras futuras.
 - [`docs/evidencia-pruebas.md`](docs/evidencia-pruebas.md): comparación de comportamiento antes y después.
 - [`docs/decisiones-tecnicas.md`](docs/decisiones-tecnicas.md): decisiones de diseño y por qué se tomaron.
-- [`docs/uso-de-ia.md`](docs/uso-de-ia.md): declaración del uso de IA.
 
 ## Equipo
 
